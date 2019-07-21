@@ -10,6 +10,7 @@ abstract class Either<L, R> implements TraversableMonadOps<Either<L, dynamic>, R
   R operator |(R dflt) => getOrElse(() => dflt);
   Either<L2, R> leftMap<L2>(L2 f(L l)) => fold((L l) => left(f(l)), right);
   Option<R> toOption() => fold((_) => none(), some);
+  Option<L> toLeftOption() => fold(some, (_) => none());
   bool isLeft() => fold((_) => true, (_) => false);
   bool isRight() => fold((_) => false, (_) => true);
   Either<R, L> swap() => fold(right, left);
