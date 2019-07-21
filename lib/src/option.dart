@@ -150,6 +150,8 @@ Option<A> none<A>() => new None();
 Option<A> some<A>(A a) => new Some(a);
 Option<A> option<A>(bool test, A value) => test ? some(value) : none();
 Option<A> optionOf<A>(A value) => value != null ? some(value) : none();
+Option<List<A>> optionOfList<A>(List<A> i) => (i.isEmpty) ? none() : some(i);
+Option<Iterable<A>> optionOfIterable<A>(Iterable<A> i) => (i.isEmpty) ? none() : some(i);
 
 class OptionMonadPlus extends MonadPlus<Option> with Monad<Option>, ApplicativePlus<Option>, Applicative<Option>, Functor<Option>, PlusEmpty<Option>, Plus<Option> {
   @override Option<B> map<A, B>(Option<A> fa, B f(A a)) => fa.map(f);
