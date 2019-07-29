@@ -8,6 +8,10 @@ abstract class IList<A> implements TraversableMonadPlusOps<IList, A> {
 
   Option<IList<A>> get tailOption;
 
+  Option<IList<A>> get option => asCons();
+
+  Option<Cons<A>> asCons();
+
   bool _isCons();
 
   A _unsafeHead();
@@ -414,6 +418,11 @@ class Cons<A> extends IList<A> {
   @override Option<A> get headOption => some(_head);
 
   @override Option<IList<A>> get tailOption => some(_tail);
+
+  @override Option<Cons<A>> asCons() => some(this);
+
+  A get head => _head;
+  IList<A> get tail => _tail;
 }
 
 class Nil<A> extends IList<A> {
@@ -427,6 +436,8 @@ class Nil<A> extends IList<A> {
   @override Option<A> get headOption => none();
 
   @override Option<IList<A>> get tailOption => none();
+
+  @override Option<Cons<A>> asCons() => none();
 }
 
 IList<A> nil<A>() => new Nil();
