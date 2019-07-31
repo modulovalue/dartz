@@ -96,6 +96,8 @@ abstract class Option<A> implements TraversableMonadPlusOps<Option, A> {
 
   bool isNone() => !isSome();
 
+  TwoOption<A, B> and<B>(Option<B> b) => TwoOption(this, b);
+
   static Option<C> map2<A, A2 extends A, B, B2 extends B, C>(Option<A2> fa, Option<B2> fb, C fun(A a, B b)) =>
     fa.fold(none, (a) => fb.fold(none, (b) => some(fun(a, b))));
 
@@ -190,4 +192,58 @@ class _SingletonIterator<A> extends Iterator<A> {
   _SingletonIterator(this._singleton);
   @override A get current => _moves == 1 ? _singleton : null;
   @override bool moveNext() => ++_moves == 1;
+}
+
+// Replace with static extension methods on tuple where each param is an Option when static extension methods land.
+class TwoOption<A, B> extends Tuple2<Option<A>, Option<B>> {
+
+  const TwoOption(Option<A> a, Option<B> b) : super(a, b);
+
+  Option<Z> map<Z>(Z Function(A, B) map) => Option.map2(value1, value2, map);
+
+  ThreeOption<A, B, Z> and<Z>(Option<Z> other) => ThreeOption(value1, value2, other);
+}
+
+class ThreeOption<A, B, C> extends Tuple3<Option<A>, Option<B>, Option<C>>{
+  const ThreeOption(Option<A> a, Option<B> b, Option<C> c): super(a, b, c);
+
+  Option<Z> map<Z>(Z Function(A, B, C) map) => Option.map3(value1, value2, value3, map);
+
+  FourOption<A, B, C, Z> and<Z>(Option<Z> other) => FourOption(value1, value2, value3, other);
+}
+
+class FourOption<A, B, C, D> extends Tuple4<Option<A>, Option<B>, Option<C>, Option<D>>{
+
+  const FourOption(Option<A> a, Option<B> b, Option<C> c, Option<D> d) : super(a, b, c, d);
+
+  Option<Z> map<Z>(Z Function(A, B, C, D) map) => Option.map4(value1, value2, value3, value4, map);
+
+  FiveOption<A, B, C, D, Z> and<Z>(Option<Z> other) => FiveOption(value1, value2, value3, value4, other);
+}
+
+class FiveOption<A, B, C, D, E> {
+  final Option<A> a;
+  final Option<B> b;
+  final Option<C> c;
+  final Option<D> d;
+  final Option<E> e;
+
+  const FiveOption(this.a, this.b, this.c, this.d, this.e);
+
+  Option<Z> map<Z>(Z Function(A, B, C, D, E) map) => Option.map5(a, b, c, d, e, map);
+
+  SixOption<A, B, C, D, E, Z> and<Z>(Option<Z> other) => SixOption(a, b, c, d, e, other);
+}
+
+class SixOption<A, B, C, D, E, F> {
+  final Option<A> a;
+  final Option<B> b;
+  final Option<C> c;
+  final Option<D> d;
+  final Option<E> e;
+  final Option<F> f;
+
+  const SixOption(this.a, this.b, this.c, this.d, this.e, this.f);
+
+  Option<Z> map<Z>(Z Function(A, B, C, D, E, F) map) => Option.map6(a, b, c, d, e, f, map);
 }
