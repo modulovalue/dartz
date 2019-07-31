@@ -3,7 +3,7 @@ part of dartz;
 class Tuple2<T1, T2> {
   final T1 value1;
   final T2 value2;
-  Tuple2(this.value1, this.value2);
+  const Tuple2(this.value1, this.value2);
   R apply<R>(Function2<T1, T2, R> f) => f(value1, value2);
   Tuple2<NT1, T2> map1<NT1>(Function1<T1, NT1> f) => new Tuple2(f(value1), value2);
   Tuple2<T1, NT2> map2<NT2>(Function1<T2, NT2> f) => new Tuple2(value1, f(value2));
@@ -18,7 +18,7 @@ class Tuple2Semigroup<T1, T2> extends Semigroup<Tuple2<T1, T2>> {
   final Semigroup<T1> _value1Semigroup;
   final Semigroup<T2> _value2Semigroup;
 
-  Tuple2Semigroup(this._value1Semigroup, this._value2Semigroup);
+  const Tuple2Semigroup(this._value1Semigroup, this._value2Semigroup);
 
   @override Tuple2<T1, T2> append(Tuple2<T1, T2> t1, Tuple2<T1, T2> t2) =>
       new Tuple2<T1, T2>(_value1Semigroup.append(t1.value1, t2.value1), _value2Semigroup.append(t1.value2, t2.value2));
@@ -30,7 +30,7 @@ class Tuple2Monoid<T1, T2> extends Monoid<Tuple2<T1, T2>> {
   final Monoid<T1> _value1Monoid;
   final Monoid<T2> _value2Monoid;
 
-  Tuple2Monoid(this._value1Monoid, this._value2Monoid);
+  const Tuple2Monoid(this._value1Monoid, this._value2Monoid);
 
   @override Tuple2<T1, T2> append(Tuple2<T1, T2> t1, Tuple2<T1, T2> t2) =>
       new Tuple2<T1, T2>(_value1Monoid.append(t1.value1, t2.value1), _value2Monoid.append(t1.value2, t2.value2));
@@ -44,7 +44,7 @@ class Tuple3<T1, T2, T3> {
   final T1 value1;
   final T2 value2;
   final T3 value3;
-  Tuple3(this.value1, this.value2, this.value3);
+  const Tuple3(this.value1, this.value2, this.value3);
   R apply<R>(Function3<T1, T2, T3, R> f) => f(value1, value2, value3);
   @override String toString() => '($value1, $value2, $value3)';
   @override bool operator ==(other) => other is Tuple3 && other.value1 == value1 && other.value2 == value2 && other.value3 == value3;
@@ -58,7 +58,7 @@ class Tuple3Semigroup<T1, T2, T3> extends Semigroup<Tuple3<T1, T2, T3>> {
   final Semigroup<T2> _value2Semigroup;
   final Semigroup<T3> _value3Semigroup;
 
-  Tuple3Semigroup(this._value1Semigroup, this._value2Semigroup, this._value3Semigroup);
+  const Tuple3Semigroup(this._value1Semigroup, this._value2Semigroup, this._value3Semigroup);
 
   @override Tuple3<T1, T2, T3> append(Tuple3<T1, T2, T3> t1, Tuple3<T1, T2, T3> t2) =>
       new Tuple3<T1, T2, T3>(_value1Semigroup.append(t1.value1, t2.value1), _value2Semigroup.append(t1.value2, t2.value2), _value3Semigroup.append(t1.value3, t2.value3));
@@ -71,7 +71,7 @@ class Tuple3Monoid<T1, T2, T3> extends Monoid<Tuple3<T1, T2, T3>> {
   final Monoid<T2> _value2Monoid;
   final Monoid<T3> _value3Monoid;
 
-  Tuple3Monoid(this._value1Monoid, this._value2Monoid, this._value3Monoid);
+  const Tuple3Monoid(this._value1Monoid, this._value2Monoid, this._value3Monoid);
 
   @override Tuple3<T1, T2, T3> append(Tuple3<T1, T2, T3> t1, Tuple3<T1, T2, T3> t2) =>
       new Tuple3<T1, T2, T3>(_value1Monoid.append(t1.value1, t2.value1), _value2Monoid.append(t1.value2, t2.value2), _value3Monoid.append(t1.value3, t2.value3));
@@ -87,7 +87,7 @@ class Tuple4<T1, T2, T3, T4> {
   final T2 value2;
   final T3 value3;
   final T4 value4;
-  Tuple4(this.value1, this.value2, this.value3, this.value4);
+  const Tuple4(this.value1, this.value2, this.value3, this.value4);
   R apply<R>(Function4<T1, T2, T3, T4, R> f) => f(value1, value2, value3, value4);
   @override String toString() => '($value1, $value2, $value3, $value4)';
   @override bool operator ==(other) => other is Tuple4 && other.value1 == value1 && other.value2 == value2 && other.value3 == value3 && other.value4 == value4;
@@ -102,7 +102,7 @@ class Tuple4Semigroup<T1, T2, T3, T4> extends Semigroup<Tuple4<T1, T2, T3, T4>> 
   final Semigroup<T3> _value3Semigroup;
   final Semigroup<T4> _value4Semigroup;
 
-  Tuple4Semigroup(this._value1Semigroup, this._value2Semigroup, this._value3Semigroup, this._value4Semigroup);
+  const Tuple4Semigroup(this._value1Semigroup, this._value2Semigroup, this._value3Semigroup, this._value4Semigroup);
 
   @override Tuple4<T1, T2, T3, T4> append(Tuple4<T1, T2, T3, T4> t1, Tuple4<T1, T2, T3, T4> t2) =>
       new Tuple4<T1, T2, T3, T4>(_value1Semigroup.append(t1.value1, t2.value1), _value2Semigroup.append(t1.value2, t2.value2), _value3Semigroup.append(t1.value3, t2.value3), _value4Semigroup.append(t1.value4, t2.value4));
@@ -117,7 +117,7 @@ class Tuple4Monoid<T1, T2, T3, T4> extends Monoid<Tuple4<T1, T2, T3, T4>> {
   final Monoid<T3> _value3Monoid;
   final Monoid<T4> _value4Monoid;
 
-  Tuple4Monoid(this._value1Monoid, this._value2Monoid, this._value3Monoid, this._value4Monoid);
+  const Tuple4Monoid(this._value1Monoid, this._value2Monoid, this._value3Monoid, this._value4Monoid);
 
   @override Tuple4<T1, T2, T3, T4> append(Tuple4<T1, T2, T3, T4> t1, Tuple4<T1, T2, T3, T4> t2) =>
       new Tuple4<T1, T2, T3, T4>(_value1Monoid.append(t1.value1, t2.value1), _value2Monoid.append(t1.value2, t2.value2), _value3Monoid.append(t1.value3, t2.value3), _value4Monoid.append(t1.value4, t2.value4));

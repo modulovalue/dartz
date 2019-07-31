@@ -1,15 +1,14 @@
 part of dartz;
 
 abstract class Semigroup<A> {
+  const Semigroup();
   A append(A a1, A a2);
   Endo<A> appendC(A a1) => (A a2) => append(a1, a2);
 }
 
 class _AnonymousSemigroup<A> extends Semigroup<A> {
   final Function2<A, A, A> _append;
-
-  _AnonymousSemigroup(this._append);
-
+  const _AnonymousSemigroup(this._append);
   @override A append(A a1, A a2) => _append(a1, a2);
 }
 

@@ -1,6 +1,7 @@
 part of dartz;
 
 abstract class Monoid<A> extends Semigroup<A> {
+  const Monoid();
   A zero();
 }
 
@@ -8,7 +9,7 @@ class _AnonymousMonoid<A> extends Monoid<A> {
   final Function0<A> _zero;
   final Function2<A, A, A> _append;
 
-  _AnonymousMonoid(this._zero, this._append);
+  const _AnonymousMonoid(this._zero, this._append);
 
   @override A zero() => _zero();
 
