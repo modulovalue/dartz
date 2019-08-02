@@ -10,6 +10,7 @@ part 'src/free.dart';
 part 'src/functor.dart';
 part 'src/future.dart';
 part 'src/group.dart';
+part 'src/field.dart';
 part 'src/id.dart';
 part 'src/ilist.dart';
 part 'src/list.dart';
