@@ -3,6 +3,7 @@ part of dartz;
 // TODO: Monoids over floating point types tend to be law breakers... use with care!
 
 class NumSumMonoid extends Monoid<num> {
+  const NumSumMonoid();
   @override num zero() => 0;
   @override num append(num n1, num n2) => n1+n2;
 }
@@ -10,6 +11,7 @@ class NumSumMonoid extends Monoid<num> {
 final Monoid<num> NumSumMi = new NumSumMonoid();
 
 class IntSumMonoid extends Monoid<int> {
+  const IntSumMonoid();
   @override int zero() => 0;
   @override int append(int n1, int n2) => n1+n2;
 }
@@ -18,6 +20,7 @@ final Monoid<int> IntSumMi = new IntSumMonoid();
 
 
 class NumProductMonoid extends Monoid<num> {
+  const NumProductMonoid();
   @override num zero() => 1;
   @override num append(num n1, num n2) => n1*n2;
 }
@@ -25,18 +28,21 @@ class NumProductMonoid extends Monoid<num> {
 final Monoid<num> NumProductMi = new NumProductMonoid();
 
 class NumMaxSemigroup extends Semigroup<num> {
+  const NumMaxSemigroup();
   @override num append(num n1, num n2) => n1 > n2 ? n1 : n2;
 }
 
 final Semigroup<num> NumMaxSi = new NumMaxSemigroup();
 
 class NumMinSemigroup extends Semigroup<num> {
+  const NumMinSemigroup();
   @override num append(num n1, num n2) => n1 < n2 ? n1 : n2;
 }
 
 final Semigroup<num> NumMinSi = new NumMinSemigroup();
 
 class StringMonoid extends Monoid<String> {
+  const StringMonoid();
   @override String zero() => "";
   @override String append(String s1, String s2) => s1 + s2;
 }
@@ -44,6 +50,7 @@ class StringMonoid extends Monoid<String> {
 final Monoid<String> StringMi = new StringMonoid();
 
 class BooleanDisjunctionMonoid extends Monoid<bool> {
+  const BooleanDisjunctionMonoid();
   @override bool zero() => false;
   @override bool append(bool b1, bool b2) => b1 || b2;
 }
@@ -51,6 +58,7 @@ class BooleanDisjunctionMonoid extends Monoid<bool> {
 final Monoid<bool> BoolOrMi = new BooleanDisjunctionMonoid();
 
 class BooleanConjunctionMonoid extends Monoid<bool> {
+  const BooleanConjunctionMonoid();
   @override bool zero() => true;
   @override bool append(bool b1, bool b2) => b1 && b2;
 }
@@ -60,6 +68,7 @@ final Monoid<bool> BoolAndMi = new BooleanConjunctionMonoid();
 final Order<num> NumOrder = new ComparableOrder<num>();
 
 class _IntOrder extends Order<int> {
+  const _IntOrder();
   @override  Ordering order(int i1, int i2) => i1 < i2 ? Ordering.LT : (i1 > i2 ? Ordering.GT : Ordering.EQ);
 }
 
@@ -78,7 +87,7 @@ A cast<A>(dynamic a) {
 class IteratorEq<A> extends Eq<Iterator<A>> {
   final Eq<A> _aEq;
 
-  IteratorEq(this._aEq);
+  const IteratorEq(this._aEq);
 
   @override bool eq(Iterator<A> i1, Iterator<A> i2) {
     while(true) {

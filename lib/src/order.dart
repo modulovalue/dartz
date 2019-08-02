@@ -7,6 +7,8 @@ enum Ordering {
 }
 
 abstract class Order<A> extends Eq<A> {
+  const Order();
+
   Ordering order(A a1, A a2);
 
   bool eq(A a1, A a2) => order(a1, a2) == Ordering.EQ;
