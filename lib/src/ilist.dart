@@ -235,11 +235,11 @@ abstract class IList<A> implements TraversableMonadPlusOps<IList, A> {
 
   static IList<A> flattenOption<A>(IList<Option<A>> oas) => oas.flatMap((oa) => oa.fold(nil, (a) => cons(a, nil())));
 
-  R traverse<R>(R init, R nextL(R a, A gb)) {
+  R traverse<R>(R init, R next(R a, A gb)) {
     R result = init;
     var current = this;
     while (current._isCons()) {
-      result = nextL(result, current._unsafeHead());
+      result = next(result, current._unsafeHead());
       current = current._unsafeTail();
     }
     return result;
