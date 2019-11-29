@@ -235,49 +235,39 @@ abstract class IList<A> implements TraversableMonadPlusOps<IList, A> {
 
   static IList<A> flattenOption<A>(IList<Option<A>> oas) => oas.flatMap((oa) => oa.fold(nil, (a) => cons(a, nil())));
 
-  R traverse<R>(R init, R next(R a, A gb)) {
-    R result = init;
-    var current = this;
-    while (current._isCons()) {
-      result = next(result, current._unsafeHead());
-      current = current._unsafeTail();
-    }
-    return result;
-  }
-
   Option<IList<B>> traverseOption<B>(Option<B> f(A a)) {
-    return traverse<Option<IList<B>>>(some(nil()), 
+    return foldLeft<Option<IList<B>>>(some(nil()),
             (a, gb) => a.bind((a) => f(gb).map((h) => cons(h, a))))
         .map((l) => l.reverse());
   }
 
   Either<L, IList<B>> traverseEither<B, L>(Either<L, B> f(A a)) {
-    return traverse<Either<L, IList<B>>>(right(nil()),
+    return foldLeft<Either<L, IList<B>>>(right(nil()),
       (a, gb) => a.bind((a) => f(gb).map((h) => cons(h, a))),
     ).map((l) => l.reverse());
   }
 
   Future<IList<B>> traverseFuture<B>(Future<B> f(A a)) async {
-    return traverse<Future<IList<B>>>(new Future.microtask(() async => nil()),
+    return foldLeft<Future<IList<B>>>(new Future.microtask(() async => nil()),
       (a, gb) => a.then((a) => f(gb).then((h) => cons(h, a))),
     ).then((l) => l.reverse());
   }
 
   State<S, IList<B>> traverseState<B, S>(State<S, B> f(A a)) {
-    return traverse<State<S, IList<B>>>(new State((s) => tuple2(nil(), s)),
+    return foldLeft<State<S, IList<B>>>(new State((s) => tuple2(nil(), s)),
       (a, gb) => a.bind((a) => f(gb).map((h) => cons(h, a))),
     ).map((l) => l.reverse());
   }
 
   Evaluation<E, R, W, S, IList<B>> traverseEvaluation<B, E, R, W, S>(Monoid<W> WMi, Evaluation<E, R, W, S, B> f(A a)) {
-    return traverse<Evaluation<E, R, W, S, IList<B>>>(
+    return foldLeft<Evaluation<E, R, W, S, IList<B>>>(
       new Evaluation(WMi, (r, s) => new Future.value(right(tuple3(WMi.zero(), s, nil())))),
       (a, gb) => a.bind((a) => f(gb).map((h) => cons(h, a))),
     ).map((l) => l.reverse());
   }
 
   Free<F, IList<B>> traverseFree<F, B>(Free<F, B> f(A a)) {
-    return traverse<Free<F, IList<B>>>(new Pure(nil()),
+    return foldLeft<Free<F, IList<B>>>(new Pure(nil()),
       (a, gb) => a.bind((a) => f(gb).map((h) => cons(h, a))),
     ).map((l) => l.reverse());
   }
