@@ -273,7 +273,7 @@ abstract class IList<A> implements TraversableMonadPlusOps<IList, A> {
   }
 
   Option<IList<B>> traverseOptionM<B>(Option<IList<B>> f(A a)) {
-    return traverse<Option<IList<B>>>(some(nil()),
+    return foldLeft<Option<IList<B>>>(some(nil()),
       (a, gb) => Option.map2(a, f(gb), (IList<B> a, IList<B> h) => a.plus(h)),
     );
   }
