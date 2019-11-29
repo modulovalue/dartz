@@ -235,81 +235,57 @@ abstract class IList<A> implements TraversableMonadPlusOps<IList, A> {
 
   static IList<A> flattenOption<A>(IList<Option<A>> oas) => oas.flatMap((oa) => oa.fold(nil, (a) => cons(a, nil())));
 
-  Option<IList<B>> traverseOption<B>(Option<B> f(A a)) {
-    Option<IList<B>> result = some(nil());
+  R traverse<R>(R init, R nextL(R a, A gb)) {
+    R result = init;
     var current = this;
-    while(current._isCons()) {
-      final gb = f(current._unsafeHead());
-      result = result.fold(none, (a) => gb.fold(none, (h) => some(new Cons(h, a))));
-      current = current._unsafeTail();
-    }
-    return result.map((l) => l.reverse());
-  }
-
-  Either<L, IList<B>> traverseEither<B, L>(Either<L, B> f(A a)) {
-    Either<L, IList<B>> result = right(nil());
-    var current = this;
-    while(current._isCons()) {
-      final gb = f(current._unsafeHead());
-      result = result.fold(left, (a) => gb.fold(left, (h) => right(new Cons(h, a))));
-      current = current._unsafeTail();
-    }
-    return result.map((l) => l.reverse());
-  }
-
-  Future<IList<B>> traverseFuture<B>(Future<B> f(A a)) {
-    Future<IList<B>> result = new Future.microtask(nil);
-    var current = this;
-    while(current._isCons()) {
-      final gb = f(current._unsafeHead());
-      result = result.then((a) => gb.then((h) => new Cons(h, a)));
-      current = current._unsafeTail();
-    }
-    return result.then((l) => l.reverse());
-  }
-
-  State<S, IList<B>> traverseState<B, S>(State<S, B> f(A a)) {
-    State<S, IList<B>> result = new State((s) => tuple2(nil(), s));
-    var current = this;
-    while(current._isCons()) {
-      final gb = f(current._unsafeHead());
-      result = result.flatMap((a) => gb.map((h) => new Cons(h, a)));
-      current = current._unsafeTail();
-    }
-    return result.map((l) => l.reverse());
-  }
-
-  Evaluation<E, R, W, S, IList<B>> traverseEvaluation<B, E, R, W, S>(Monoid<W> WMi, Evaluation<E, R, W, S, B> f(A a)) {
-    Evaluation<E, R, W, S, IList<B>> result = new Evaluation(WMi, (r, s) => new Future.value(new Right(new Tuple3(WMi.zero(), s, nil()))));
-    var current = this;
-    while(current._isCons()) {
-      final gb = f(current._unsafeHead());
-      result = result.flatMap((a) => gb.map((h) => new Cons(h, a)));
-      current = current._unsafeTail();
-    }
-    return result.map((l) => l.reverse());
-  }
-
-  Free<F, IList<B>> traverseFree<F, B>(Free<F, B> f(A a)) {
-    Free<F, IList<B>> result = new Pure(nil());
-    var current = this;
-    while(current._isCons()) {
-      final gb = f(current._unsafeHead());
-      result = result.flatMap((a) => gb.map((h) => new Cons(h, a)));
-      current = current._unsafeTail();
-    }
-    return result.map((l) => l.reverse());
-  }
-
-  Option<IList<B>> traverseOptionM<B>(Option<IList<B>> f(A a)) {
-    var result = some(nil<B>());
-    var current = this;
-    while(current._isCons()) {
-      final gb = f(current._unsafeHead());
-      result = Option.map2(result, gb, (IList<B> a, IList<B> h) => a.plus(h));
+    while (current._isCons()) {
+      result = nextL(result, current._unsafeHead());
       current = current._unsafeTail();
     }
     return result;
+  }
+
+  Option<IList<B>> traverseOption<B>(Option<B> f(A a)) {
+    return traverse<Option<IList<B>>>(some(nil()), 
+            (a, gb) => a.bind((a) => f(gb).map((h) => cons(h, a))))
+        .map((l) => l.reverse());
+  }
+
+  Either<L, IList<B>> traverseEither<B, L>(Either<L, B> f(A a)) {
+    return traverse<Either<L, IList<B>>>(right(nil()),
+      (a, gb) => a.bind((a) => f(gb).map((h) => cons(h, a))),
+    ).map((l) => l.reverse());
+  }
+
+  Future<IList<B>> traverseFuture<B>(Future<B> f(A a)) async {
+    return traverse<Future<IList<B>>>(new Future.microtask(() async => nil()),
+      (a, gb) => a.then((a) => f(gb).then((h) => cons(h, a))),
+    ).then((l) => l.reverse());
+  }
+
+  State<S, IList<B>> traverseState<B, S>(State<S, B> f(A a)) {
+    return traverse<State<S, IList<B>>>(new State((s) => tuple2(nil(), s)),
+      (a, gb) => a.bind((a) => f(gb).map((h) => cons(h, a))),
+    ).map((l) => l.reverse());
+  }
+
+  Evaluation<E, R, W, S, IList<B>> traverseEvaluation<B, E, R, W, S>(Monoid<W> WMi, Evaluation<E, R, W, S, B> f(A a)) {
+    return traverse<Evaluation<E, R, W, S, IList<B>>>(
+      new Evaluation(WMi, (r, s) => new Future.value(right(tuple3(WMi.zero(), s, nil())))),
+      (a, gb) => a.bind((a) => f(gb).map((h) => cons(h, a))),
+    ).map((l) => l.reverse());
+  }
+
+  Free<F, IList<B>> traverseFree<F, B>(Free<F, B> f(A a)) {
+    return traverse<Free<F, IList<B>>>(new Pure(nil()),
+      (a, gb) => a.bind((a) => f(gb).map((h) => cons(h, a))),
+    ).map((l) => l.reverse());
+  }
+
+  Option<IList<B>> traverseOptionM<B>(Option<IList<B>> f(A a)) {
+    return traverse<Option<IList<B>>>(some(nil()),
+      (a, gb) => Option.map2(a, f(gb), (IList<B> a, IList<B> h) => a.plus(h)),
+    );
   }
 
   static Option<IList<A>> sequenceOption<A>(IList<Option<A>> loa) => loa.traverseOption(id);
